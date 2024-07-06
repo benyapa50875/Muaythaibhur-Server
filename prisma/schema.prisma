@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  firstname    String
+  lastname     String
+  avatar       String
+  isVerify     Int            @default(1)
+  blog         blog[]
+  blog_like    blog_like[]
+  blog_view    blog_view[]
+  comment_blog comment_blog[]
+  evaluation   evaluation[]
+}
+
+model admin {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+model pages {
+  id        Int    @id @default(autoincrement())
+  page_name String
+}
+
+model web_info {
+  id               Int    @id @default(autoincrement())
+  web_name         String
+  meta_description String
+  favicon          String
+  feature_img      String
+}
+
+model homepage {
+  id           Int    @id @default(autoincrement())
+  header1      String @db.VarChar(1000)
+  paragraph1   String @db.VarChar(1000)
+  button1_1    String
+  button1_2    String
+  header2      String @db.VarChar(1000)
+  subheader2   String @db.VarChar(1000)
+  icon1        String
+  icon2        String
+  list1        String
+  list1_detail String @db.VarChar(1000)
+  list2        String
+  list2_detail String @db.VarChar(1000)
+  hero_img     String
+}
+
+model contact_info {
+  id        Int    @id @default(autoincrement())
+  phone     String
+  facebook  String
+  instagram String
+  x_twitter String
+}
+
+model lessons {
+  id            Int             @id @default(autoincrement())
+  lesson_name   String
+  type_id       Int
+  excerpt       String
+  feature_img   String
+  evaluation    evaluation[]
+  lesson_detail lesson_detail[]
+  lesson_types  lesson_types    @relation(fields: [type_id], references: [id])
+
+  @@index([type_id], map: "lessons_type_id_fkey")
+}
+
+model lesson_types {
+  id        Int       @id @default(autoincrement())
+  type_name String
+  lessons   lessons[]
+}
+
+model lesson_detail {
+  id          Int     @id @default(autoincrement())
+  lesson_id   Int
+  lesson_name String
+  yt_url      String
+  paragraph1  String  @db.VarChar(1000)
+  paragraph2  String  @db.VarChar(1000)
+  paragraph3  String  @db.VarChar(1000)
+  lessons     lessons @relation(fields: [lesson_id], references: [id])
+
+  @@index([lesson_id], map: "lesson_detail_lesson_id_fkey")
+}
+
+model evaluation {
+  id         Int     @id @default(autoincrement())
+  lesson_id  Int
+  userId     Int
+  vdo        String
+  score      Int?
+  suggestion String? @db.Text
+  lessons    lessons @relation(fields: [lesson_id], references: [id])
+  user       user    @relation(fields: [userId], references: [id])
+
+  @@index([lesson_id], map: "evaluation_lesson_id_fkey")
+  @@index([userId], map: "evaluation_userId_fkey")
+}
+
+model contact_us {
+  id  Int    @id @default(autoincrement())
+  img String
+}
+
+model contact_us_form {
+  id         Int      @id @default(autoincrement())
+  sender     String
+  email      String
+  msg        String
+  time_stamp DateTime @default(now()) @db.Date
+}
+
+model blog {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  message      String         @db.VarChar(1000)
+  views        Int            @default(0)
+  likes        Int            @default(0)
+  comments     Int            @default(0)
+  user         user           @relation(fields: [userId], references: [id])
+  blog_like    blog_like[]
+  blog_view    blog_view[]
+  comment_blog comment_blog[]
+
+  @@index([userId], map: "blog_userId_fkey")
+}
+
+model blog_view {
+  id       Int      @id @default(autoincrement())
+  blogId   Int
+  userId   Int?
+  viewDate DateTime @default(now())
+  blog     blog     @relation(fields: [blogId], references: [id])
+  user     user?    @relation(fields: [userId], references: [id])
+
+  @@index([blogId], map: "blog_view_blogId_fkey")
+  @@index([userId], map: "blog_view_userId_fkey")
+}
+
+model blog_like {
+  id       Int      @id @default(autoincrement())
+  blogId   Int
+  userId   Int
+  likeDate DateTime @default(now())
+  blog     blog     @relation(fields: [blogId], references: [id])
+  user     user     @relation(fields: [userId], references: [id])
+
+  @@index([blogId], map: "blog_like_blogId_fkey")
+  @@index([userId], map: "blog_like_userId_fkey")
+}
+
+model comment_blog {
+  id      Int    @id @default(autoincrement())
+  blogId  Int
+  message String @db.VarChar(1000)
+  userId  Int
+  blog    blog   @relation(fields: [blogId], references: [id])
+  user    user   @relation(fields: [userId], references: [id])
+
+  @@index([blogId], map: "comment_blog_blogId_fkey")
+  @@index([userId], map: "comment_blog_userId_fkey")
+}
