@@ -154,6 +154,23 @@ exports.deleteLessonById = async (req, res) => {
       where: { lesson_id: parseInt(id) }
     });
 
+    const getEvaluation = await prisma.evaluation.findMany({
+      where: { lesson_id: parseInt(id) }
+    });
+
+    const evaluationFile = getEvaluation.vdo;
+
+    if (evaluationFile) {
+      const evaluationPath = path.join(__dirname, '../uploads/evaluation', evaluationFile);
+      fs.unlink(evaluationPath, (err) => {
+        if (err) console.error('Error deleting old icon 1:', err);
+      });
+    }
+
+    await prisma.evaluation.deleteMany({
+      where: { lesson_id: parseInt(id) }
+    });
+
     // Delete the lesson itself
     await prisma.lessons.delete({
       where: { id: parseInt(id) }
