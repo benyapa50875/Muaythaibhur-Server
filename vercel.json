@@ -15,10 +15,6 @@
         "src": "/uploads/(.*)",
         "dest": "/uploads/$1"
       }
-    ],
-    "env": {
-      "PORT": "3000",
-      "DATABASE_URL": "@database_url"
-    }
+    ]
   }
   
