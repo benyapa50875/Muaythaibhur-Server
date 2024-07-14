@@ -11,7 +11,7 @@ dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
-app.get( (req, res ) => res.json( "Hello Worold"))
+app.get("/", (req, res) => res.json("Hello World"));
 
 // Middleware
 app.use(morgan('dev')); // Add morgan middleware
