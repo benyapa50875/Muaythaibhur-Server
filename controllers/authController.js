@@ -24,7 +24,7 @@ let transporter = nodemailer.createTransport({
 async function sendVerificationEmail(email, token) {
   try {
   
-    const url = `https://muaythaibhur-client.onrender.com/verify/${token}`; // Replace with your actual Render URL
+    const url = `https://muaythaibhur-client.onrender.com/api/auth/verify/${token}`; // Replace with your actual Render URL
     // Send email
     await transporter.sendMail({
       from: process.env.SMTP_USER, // Sender email address
