@@ -24,7 +24,7 @@ let transporter = nodemailer.createTransport({
 async function sendVerificationEmail(email, token) {
   try {
   
-    const url = `http://localhost:3000/api/auth/verify/${token}`;
+    const url = `https://muaythaibhur-client.onrender.com/verify/${token}`; // Replace with your actual Render URL
     // Send email
     await transporter.sendMail({
       from: process.env.SMTP_USER, // Sender email address
@@ -137,7 +137,7 @@ exports.verifyEmail = async (req, res) => {
       where: { id: userId },
       data: { isVerify: 2 },
     });
-    res.redirect('http://localhost:5173/verify/success'); // Replace with your actual React app URL
+    res.redirect('https://muaythaibhur-client.onrender.com/verify/success'); // Replace with your actual React app URL
   } catch (error) {
     res.status(400).json({ error: 'Invalid token' });
   }
